@@ -57,7 +57,7 @@ def getMD(issues,d):
 
 def get_day_report(d):
     """
-    docstring
+    获取某一天的工作日志
     """
   
     # 读取组员信息
