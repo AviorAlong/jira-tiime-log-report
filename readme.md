@@ -15,6 +15,8 @@
 URL = ''  # jira 地址
 USERNSME = '' # jira 账号
 PASSWORD = '' # jira 密码
+GROUP = '' # 组名
+BROWSE = '' # browse url
 ```
 - 配置用户
 
