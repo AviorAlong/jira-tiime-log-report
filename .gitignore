@@ -1,5 +1,5 @@
 .log
-# *.json
+*.json
 report.md
-# users.json
+users.json
 __pycache__
