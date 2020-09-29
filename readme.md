@@ -3,7 +3,7 @@
 ## 环境
  - python 3
 ## 下载
-```git clone git@github.com:AviorAlong/jira-tiime-log-report.git ```
+```git clone git@gitlab.zmaxis.com:along.shi/zm-jira-timelog-report.git ```
 ## 安装依赖
 
 ```pip install -r  requirements``` 
@@ -27,5 +27,5 @@ PASSWORD = '' # jira 密码
 }]
 ```
 ## 运行
-指定日期，暂时只支持具体某一天
+指定日期，暂时只支持具体某一天，执行完成后会生成report.md文件
 ``` python main.py "xxxx-xx-xx"```

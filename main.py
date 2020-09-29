@@ -17,6 +17,7 @@ def get_users():
     获取用户信息
     """
     try:
+        # 由于账号权限不够 暂未调试该结果
         u = jira.get_all_users_from_group(config.Config.GROUP)
         if u:
             users = json.load(u)
