@@ -2,3 +2,4 @@
 *.json
 report.md
 users.json
+__pycache__

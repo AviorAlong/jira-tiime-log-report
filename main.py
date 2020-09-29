@@ -1,46 +1,72 @@
 #!/usr/bin/python
+#-*- coding: utf-8 -*-
 from atlassian import Jira
 import sys
 import json
 import logging
+import config
 
-def get_day_report(date):
+jira = Jira(
+        url=config.Config.URL,
+        username = config.Config.USERNSME,
+        password=config.Config.PASSWORD
+    )
+
+def get_users():
     """
-    docstring
+    获取用户信息
     """
-    jira = Jira(
-            url='',
-            username='',
-            password=''
-        )
-    # 读取组员信息
-    with open('users.json', 'r',encoding='utf-8') as f:
-        users = json.load(f)
-        users_strs = [ i['name'] for i in users ] 
+    try:
+        u = jira.get_all_users_from_group(config.Config.GROUP)
+        if u:
+            users = json.load(u)
+            users_strs = [ i['name'] for i in users ] 
+            workers = ','.join(users_strs)
+        else:
+            raise '获取jira用户组信息失败'
+    except Exception as e:
+        print(e)
+        with open('users.json', 'r',encoding='utf-8') as f:
+            users = json.load(f)
+            users_strs = [ i['name'] for i in users ] 
+            workers = ','.join(users_strs)
+    return workers
 
-        workers = ','.join(users_strs)
-
-    jql_request =  "worklogAuthor in ({}) AND worklogDate = {}".format(workers, date)
-    issues = jira.jql(jql_request)
-    
+def getMD(issues,d):
+    """
+    处理成markdown 格式
+    """
     tableHead = '| 姓名 | 任务 | 工作日志 | \n'
     tableMode = '| ---  | --- | ----| \n'
     fileContent = tableHead + tableMode
-    if issues and issues['total'] > 0:
-        for w in  issues['issues']:
-            if w['fields'] and  w['fields']['worklog'] and w['fields']['worklog']['worklogs']:
-                workerlogs = w['fields']['worklog']['worklogs']
-                for i in workerlogs:
-                    updatetime = i['updated'].split('T')
+    for w in  issues['issues']:
+        if w['fields'] and  w['fields']['worklog'] and w['fields']['worklog']['worklogs']:
+            workerlogs = w['fields']['worklog']['worklogs']
+            for i in workerlogs:
+                startTime = i['started'].split('T')
 
-                    if updatetime[0] == date:
-                        name = i['author']['displayName']
-                        # 替换换行和制表符
-                        log = i['comment'].replace('\r\n',' ')
-                        task = w['key']
-                        tableContent = '| {} | http://jira.zmops.cc/browse/{} | {} | \n'.format(name,task,log)
-                        fileContent = fileContent + tableContent
-                  
+                if startTime[0] == d:
+                    name = i['author']['displayName']
+                    # 替换换行和制表符
+                    log = i['comment'].replace('\r\n',' ')
+                    task = w['key']
+                    tableContent = '| {} | http://jira.zmops.cc/browse/{} | {} | \n'.format(name,task,log)
+                    fileContent = fileContent + tableContent
+    return fileContent
+
+def get_day_report(d):
+    """
+    docstring
+    """
+  
+    # 读取组员信息
+    workers = get_users()
+
+    jql_request =  "worklogAuthor in ({}) AND worklogDate = {}".format(workers, d)
+    issues = jira.jql(jql_request)
+    
+    if issues and issues['total'] > 0:
+        fileContent = getMD(issues,d) 
         with open('report.md','w', encoding='utf-8') as f:
             f.write(fileContent)
     else:
