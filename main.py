@@ -51,7 +51,7 @@ def getMD(issues,d):
                     # 替换换行和制表符
                     log = i['comment'].replace('\r\n',' ')
                     task = w['key']
-                    tableContent = '| {} | http://jira.zmops.cc/browse/{} | {} | \n'.format(name,task,log)
+                    tableContent = '| {} | {}{} | {} | \n'.format(name,config.Config.BROWSE,task,log)
                     fileContent = fileContent + tableContent
     return fileContent
 
