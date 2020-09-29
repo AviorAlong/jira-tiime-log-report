@@ -3,7 +3,7 @@
 ## 环境
  - python 3
 ## 下载
-```git clone git@gitlab.zmaxis.com:along.shi/zm-jira-timelog-report.git ```
+```git clone git@github.com:AviorAlong/jira-tiime-log-report.git ```
 ## 安装依赖
 
 ```pip install -r  requirements``` 
